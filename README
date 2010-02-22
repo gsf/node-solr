@@ -1,4 +1,4 @@
-Solr connector for Node.js
+Solr module for Node.js
 
 Node.js: http://github.com/ry/node
 Solr: http://lucene.apache.org/solr/
