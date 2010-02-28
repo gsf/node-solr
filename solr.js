@@ -55,6 +55,20 @@ Client.prototype.commit = function (options, callback) {
   this.sendRequest(requestOptions, callback);
 };
 
+Client.prototype.optimize = function (options, callback) {
+  var data = "<optimize/>";
+  var requestOptions = {
+    method: "POST",
+    path: this.updatePath,
+    headers: {
+      "Content-Length": data.length, 
+      "Host": this.fullHost
+    },
+    data: data,
+  };
+  this.sendRequest(requestOptions, callback);
+};
+
 exports.parseXml = function (xmlString) {
   return libxml.parseXmlString(xmlString);
 };

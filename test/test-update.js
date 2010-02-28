@@ -39,6 +39,14 @@ suite.addTests({
       finished();
     };
     this.client.commit(options, callback);
+  },
+  optimize: function (assert, finished) {
+    var options = {};
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.optimize(options, callback);
   }
 });
 
