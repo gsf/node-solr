@@ -1,4 +1,5 @@
-# Solr module for Node.js
+Solr module for Node.js
+
 
 Node.js: http://github.com/ry/node
 Solr: http://lucene.apache.org/solr/
@@ -9,4 +10,24 @@ http://libxmljs.squishtech.com/ and copy libxmljs.node to
 
 For testing, solr-node uses an included node-async-testing.js, 
 found at http://github.com/bentomas/node-async-testing. Run tests
-with `node test/all.js`.
+with "node test/all.js".
+
+Usage:
+
+    var solr = require("solr");
+    var sys = require("sys");
+
+    var client = solr.createClient();
+    var doc = {
+      id: "1",
+      title_t: "Foo bar"
+    };
+    var options = {};
+    var callback = function (err, response) {
+      if (err) {
+        throw err;
+      }
+      sys.puts("Document added");
+    };
+    client.add(doc, options, callback);
+
