@@ -15,7 +15,19 @@ suite.addTests({
     };
     var options = {};
     var callback = function (err, response) {
-      assert.equal(solr.getResponseStatus(response), 0);
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.add(doc, options, callback);
+  },
+  addNoId: function (assert, finished) {
+    var doc = {
+      fizzbuzz_t: "foo",
+      wakak_i: "5",
+    };
+    var options = {};
+    var callback = function (err, response) {
+      assert.equal(err, "Document [null] missing required field: id");
       finished();
     };
     this.client.add(doc, options, callback);
@@ -23,7 +35,7 @@ suite.addTests({
   commit: function (assert, finished) {
     var options = {};
     var callback = function (err, response) {
-      assert.equal(solr.getResponseStatus(response), 0);
+      assert.equal(solr.getStatus(response), 0);
       finished();
     };
     this.client.commit(options, callback);

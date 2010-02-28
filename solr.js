@@ -59,16 +59,21 @@ exports.parseXml = function (xmlString) {
   return libxml.parseXmlString(xmlString);
 };
 
-exports.getResponseStatus = function (xmlString) {
-  doc = exports.parseXml(xmlString);
+exports.getStatus = function (xmlString) {
+  var doc = exports.parseXml(xmlString);
   return doc.get("//int[@name='status']").text();
+};
+
+exports.getError = function (htmlString) {
+  var doc = exports.parseXml(htmlString);
+  return doc.get("//pre").text();
 };
 
 exports.createClient = function (host, port, core) {
   var client = new Client(host, port, core);
   client.httpClient = http.createClient(client.port, client.host);
   client.httpClient.addListener("error", function (e) {
-    sys.puts("There's been an error. Is Solr running?");
+    throw "Unable to connect to Solr";
   });
   client.sendRequest = function (options, callback) {
     var request = this.httpClient.request(
@@ -79,12 +84,17 @@ exports.createClient = function (host, port, core) {
     var buffer = '';
     request.addListener("response", function (response) {
       //sys.puts(response.statusCode);
-      //sys.puts(JSON.stringify(response.headers));
+      //sys.p(response.headers);
       response.addListener("data", function (chunk) {
         buffer += chunk;
       });
       response.addListener("end", function () {
-        callback(null, buffer);
+        if (response.statusCode !== 200) {
+          var err = exports.getError(buffer);
+          callback(err, null);
+        } else {
+          callback(null, buffer);
+        }
       });
     });
     if (options.data) {
