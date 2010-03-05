@@ -69,17 +69,13 @@ Client.prototype.optimize = function (options, callback) {
   this.sendRequest(requestOptions, callback);
 };
 
-exports.parseXml = function (xmlString) {
-  return libxml.parseXmlString(xmlString);
-};
-
-exports.getStatus = function (xmlString) {
-  var doc = exports.parseXml(xmlString);
+exports.getStatus = function (statusMessage) {
+  var doc = libxml.parseXmlString(statusMessage);
   return doc.get("//int[@name='status']").text();
 };
 
-exports.getError = function (htmlString) {
-  var doc = exports.parseXml(htmlString);
+exports.getError = function (errorMessage) {
+  var doc = libxml.parseHtmlString(errorMessage);
   return doc.get("//pre").text();
 };
 
