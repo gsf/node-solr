@@ -1,0 +1,8 @@
+{ "name" : "node-solr"
+, "version" : "0.0.1"
+, "author" : "Gabriel Farrell <gsf747@gmail.com>"
+, "description" : "Solr module for Node.js"
+, "dependencies" : { "libxmljs" : "*" }
+, "main" : "./solr"
+, "scripts" : { "test" : "node test/all.js" }
+}
