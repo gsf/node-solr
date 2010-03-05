@@ -2,6 +2,9 @@ var http = require("http");
 var libxml = require("libxmljs");
 var sys = require("sys");
 
+// callback || noop borrowed from node/lib/fs.js
+function noop () {};
+
 var Client = function (host, port, core) {
   this.host = host || "127.0.0.1";
   this.port = port || "8983";
@@ -12,12 +15,27 @@ var Client = function (host, port, core) {
     this.updatePath = "/solr/" + this.core + "/update";
   }
   this.fullHost = this.host + ":" + this.port;
+  this.updateRequestOptions = function (data) {
+    var options = {
+      method: "POST",
+      path: this.updatePath,
+      headers: {
+        "Content-Length": data.length, 
+        "Host": this.fullHost
+      },
+      data: data,
+    };
+    return options;
+  };
 };
 
 Client.prototype.add = function (doc, options, callback) {
   var addParams = {};
   if (options.overwrite !== undefined) {
     addParams["overwrite"] = Boolean(options.overwrite);
+  }
+  if (options.commitWithin !== undefined) {
+    addParams["commitWithin"] = options.commitWithin;
   }
   var xmldoc = new libxml.Document(function (n) {
     n.node("add", addParams, function (n) {
@@ -29,44 +47,48 @@ Client.prototype.add = function (doc, options, callback) {
     });
   });
   var data = xmldoc.toString();
-  var requestOptions = {
-    method: "POST",
-    path: this.updatePath,
-    headers: {
-      "Content-Length": data.length, 
-      "Host": this.fullHost
-    },
-    data: data,
-  };
-  this.sendRequest(requestOptions, callback);
+  var requestOptions = this.updateRequestOptions(data);
+  this.sendRequest(requestOptions, callback || noop);
 };
 
 Client.prototype.commit = function (options, callback) {
   var data = "<commit/>";
-  var requestOptions = {
-    method: "POST",
-    path: this.updatePath,
-    headers: {
-      "Content-Length": data.length, 
-      "Host": this.fullHost
-    },
-    data: data,
-  };
-  this.sendRequest(requestOptions, callback);
+  var requestOptions = this.updateRequestOptions(data);
+  this.sendRequest(requestOptions, callback || noop);
+};
+
+Client.prototype.del = function (id, query, callback) {
+  var xmldoc = new libxml.Document(function (n) {
+    n.node("delete", function (n) {
+      if (id) {
+        if (id.constructor === Array) {
+          for (var i=0; i<id.length; i++) {
+            n.node("id", id[i]);
+          }
+        } else {
+          n.node("id", id);
+        }
+      }
+      if (query) {
+        if (query.constructor === Array) {
+          for (var i=0; i<query.length; i++) {
+            n.node("query", query[i]);
+          }
+        } else {
+          n.node("query", query);
+        }
+      }
+    });
+  });
+  var data = xmldoc.toString();
+  var requestOptions = this.updateRequestOptions(data);
+  this.sendRequest(requestOptions, callback || noop);
 };
 
 Client.prototype.optimize = function (options, callback) {
   var data = "<optimize/>";
-  var requestOptions = {
-    method: "POST",
-    path: this.updatePath,
-    headers: {
-      "Content-Length": data.length, 
-      "Host": this.fullHost
-    },
-    data: data,
-  };
-  this.sendRequest(requestOptions, callback);
+  var requestOptions = this.updateRequestOptions(data);
+  this.sendRequest(requestOptions, callback || noop);
 };
 
 exports.getStatus = function (statusMessage) {

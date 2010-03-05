@@ -20,6 +20,37 @@ suite.addTests({
     };
     this.client.add(doc, options, callback);
   },
+  add2: function (assert, finished) {
+    var doc = {
+      id: "2",
+      fizzbuzz_t: "bar",
+      wakak_i: "5"
+    };
+    var options = {};
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.add(doc, options, callback);
+  },
+  delById: function (assert, finished) {
+    var id = "1";
+    var query = null;
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.del(id, query, callback);
+  },
+  delByQuery: function (assert, finished) {
+    var id = null;
+    var query = "fizzbuzz_t:bar";
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.del(id, query, callback);
+  },
   addNoId: function (assert, finished) {
     var doc = {
       fizzbuzz_t: "foo",
