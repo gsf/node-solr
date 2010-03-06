@@ -10,11 +10,26 @@ var Client = function (host, port, core) {
   this.port = port || "8983";
   this.core = core;
   if (this.core === undefined) {
+    this.queryPath = "/solr/select?";
+  } else {
+    this.queryPath = "/solr/" + this.core + "/select?";
+  }
+  if (this.core === undefined) {
     this.updatePath = "/solr/update";
   } else {
     this.updatePath = "/solr/" + this.core + "/update";
   }
   this.fullHost = this.host + ":" + this.port;
+  this.queryRequestOptions = function (query) {
+    var options = {
+      method: "GET",
+      path: this.queryPath + query,
+      headers: {
+        "Host": this.fullHost
+      }
+    };
+    return options;
+  };
   this.updateRequestOptions = function (data) {
     var options = {
       method: "POST",
@@ -88,6 +103,11 @@ Client.prototype.del = function (id, query, callback) {
 Client.prototype.optimize = function (options, callback) {
   var data = "<optimize/>";
   var requestOptions = this.updateRequestOptions(data);
+  this.sendRequest(requestOptions, callback || noop);
+};
+
+Client.prototype.rawQuery = function (query, callback) {
+  var requestOptions = this.queryRequestOptions(query);
   this.sendRequest(requestOptions, callback || noop);
 };
 

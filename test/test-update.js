@@ -1,6 +1,5 @@
 var asyncTesting = require("./async_testing");
 var solr = require("../solr");
-var sys = require("sys");
 
 var suite = new asyncTesting.TestSuite();
 suite.setup(function () {
