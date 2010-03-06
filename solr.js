@@ -91,6 +91,12 @@ Client.prototype.optimize = function (options, callback) {
   this.sendRequest(requestOptions, callback || noop);
 };
 
+Client.prototype.rollback = function (options, callback) {
+  var data = "<rollback/>";
+  var requestOptions = this.updateRequestOptions(data);
+  this.sendRequest(requestOptions, callback || noop);
+};
+
 exports.getStatus = function (statusMessage) {
   var doc = libxml.parseXmlString(statusMessage);
   return doc.get("//int[@name='status']").text();
