@@ -4,37 +4,36 @@ var solr = require("../solr");
 var suite = new asyncTesting.TestSuite();
 suite.setup(function () {
   this.client = solr.createClient();
+  var doc = {
+    id: "1",
+    fizzbuzz_t: "foo",
+    wakak_i: "5"
+  };
+  this.client.add(doc);
+  this.client.commit();
+});
+suite.teardown(function () {
+  var id = "1";
+  this.client.del(id);
+  this.client.commit();
 });
 suite.addTests({
-  add: function (assert, finished) {
-    var doc = {
-      id: "1",
-      fizzbuzz_t: "foo",
-      wakak_i: "5"
-    };
-    var options = {};
-    var callback = function (err, response) {
-      assert.equal(solr.getStatus(response), 0);
-      finished();
-    };
-    this.client.add(doc, options, callback);
-  },
-  commit: function (assert, finished) {
-    var options = {};
-    var callback = function (err, response) {
-      assert.equal(solr.getStatus(response), 0);
-      finished();
-    };
-    this.client.commit(options, callback);
-  },
   query: function (assert, finished) {
-    var query = "q=fizzbuzz_t:foo"
+    var query = "wakak_i:5";
+    var options = null;
     var callback = function (err, response) {
-      assert.equal(solr.getStatus(response), 0);
-      //assert.equal(response, 0);
+      assert.equal(JSON.parse(response).response.numFound, 1);
       finished();
     };
-    this.client.rawQuery(query, callback);
+    this.client.query(query, options, callback);
+  },
+  rawQuery: function (assert, finished) {
+    var queryParams = "q=fizzbuzz_t:foo"
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.rawQuery(queryParams, callback);
   }
 });
 

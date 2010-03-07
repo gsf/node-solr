@@ -1,5 +1,6 @@
 var http = require("http");
 var libxml = require("libxmljs");
+var querystring = require("querystring");
 var sys = require("sys");
 
 // callback || noop borrowed from node/lib/fs.js
@@ -8,43 +9,12 @@ function noop () {};
 var Client = function (host, port, core) {
   this.host = host || "127.0.0.1";
   this.port = port || "8983";
-  this.core = core;
-  if (this.core === undefined) {
-    this.queryPath = "/solr/select?";
-  } else {
-    this.queryPath = "/solr/" + this.core + "/select?";
-  }
-  if (this.core === undefined) {
-    this.updatePath = "/solr/update";
-  } else {
-    this.updatePath = "/solr/" + this.core + "/update";
-  }
   this.fullHost = this.host + ":" + this.port;
-  this.queryRequestOptions = function (query) {
-    var options = {
-      method: "GET",
-      path: this.queryPath + query,
-      headers: {
-        "Host": this.fullHost
-      }
-    };
-    return options;
-  };
-  this.updateRequestOptions = function (data) {
-    var options = {
-      method: "POST",
-      path: this.updatePath,
-      headers: {
-        "Content-Length": data.length, 
-        "Host": this.fullHost
-      },
-      data: data,
-    };
-    return options;
-  };
+  this.core = core;
 };
 
 Client.prototype.add = function (doc, options, callback) {
+  options = options || {};
   var addParams = {};
   if (options.overwrite !== undefined) {
     addParams["overwrite"] = Boolean(options.overwrite);
@@ -62,14 +32,12 @@ Client.prototype.add = function (doc, options, callback) {
     });
   });
   var data = xmldoc.toString();
-  var requestOptions = this.updateRequestOptions(data);
-  this.sendRequest(requestOptions, callback || noop);
+  this.update(data, callback);
 };
 
 Client.prototype.commit = function (options, callback) {
   var data = "<commit/>";
-  var requestOptions = this.updateRequestOptions(data);
-  this.sendRequest(requestOptions, callback || noop);
+  this.update(data, callback);
 };
 
 Client.prototype.del = function (id, query, callback) {
@@ -96,24 +64,60 @@ Client.prototype.del = function (id, query, callback) {
     });
   });
   var data = xmldoc.toString();
-  var requestOptions = this.updateRequestOptions(data);
-  this.sendRequest(requestOptions, callback || noop);
+  this.update(data, callback);
 };
 
 Client.prototype.optimize = function (options, callback) {
   var data = "<optimize/>";
-  var requestOptions = this.updateRequestOptions(data);
-  this.sendRequest(requestOptions, callback || noop);
+  this.update(data, callback);
 };
 
-Client.prototype.rawQuery = function (query, callback) {
-  var requestOptions = this.queryRequestOptions(query);
+Client.prototype.query = function (query, options, callback) {
+  var queryParams = options || {};
+  queryParams.q = query;
+  queryParams.wt = "json";
+  queryParams = querystring.stringify(queryParams);
+  this.rawQuery(queryParams, callback);
+};
+
+Client.prototype.rawQuery = function (queryParams, callback) {
+  var queryPath, requestOptions;
+  if (this.core === undefined) {
+    queryPath = "/solr/select?";
+  } else {
+    queryPath = "/solr/" + this.core + "/select?";
+  }
+  requestOptions = {
+    method: "GET",
+    path: queryPath + queryParams,
+    headers: {
+      "Host": this.fullHost
+    }
+  };
   this.sendRequest(requestOptions, callback || noop);
 };
 
 Client.prototype.rollback = function (options, callback) {
   var data = "<rollback/>";
-  var requestOptions = this.updateRequestOptions(data);
+  this.update(data, callback);
+};
+
+Client.prototype.update = function (data, callback) {
+  var updatePath, requestOptions;
+  if (this.core === undefined) {
+    updatePath = "/solr/update";
+  } else {
+    updatePath = "/solr/" + this.core + "/update";
+  }
+  requestOptions = {
+    method: "POST",
+    path: updatePath,
+    headers: {
+      "Content-Length": data.length, 
+      "Host": this.fullHost
+    },
+    data: data,
+  };
   this.sendRequest(requestOptions, callback || noop);
 };
 
@@ -134,11 +138,8 @@ exports.createClient = function (host, port, core) {
     throw "Unable to connect to Solr";
   });
   client.sendRequest = function (options, callback) {
-    var request = this.httpClient.request(
-        options.method.toUpperCase(), 
-        options.path,
-        options.headers
-    );
+    var request = this.httpClient.request(options.method.toUpperCase(), 
+      options.path, options.headers);
     var buffer = '';
     request.addListener("response", function (response) {
       //sys.puts(response.statusCode);
