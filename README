@@ -4,11 +4,11 @@ Solr module for Node.js
 Node.js: http://github.com/ry/node
 Solr: http://lucene.apache.org/solr/
 
-solr-node depends on libxml.js. Install it from 
+node-solr depends on libxml.js. Install it from 
 http://libxmljs.squishtech.com/ and copy libxmljs.node to 
 ~/.node_libraries/ or elsewhere on your require.path.
 
-For testing, solr-node uses an included node-async-testing.js, 
+For testing, node-solr uses an included node-async-testing.js, 
 found at http://github.com/bentomas/node-async-testing. Run tests
 with "node test/all.js".
 
