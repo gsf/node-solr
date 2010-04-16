@@ -54,7 +54,7 @@ Test.prototype.run = function() {
 
   try {
     this.__phase = 'test';
-    this.__func(this.assert, function() { self.__phase = 'teardown'; self.finish(); }, this);
+    this.__func(this.assert, function() { self.finish(); }, this);
   }
   catch(err) {
     if( this.listeners('uncaughtException').length > 0 ) {
@@ -67,7 +67,6 @@ Test.prototype.run = function() {
 
   // they didn't ask for the finish function so assume it is synchronous
   if( this.__func.length < 2 ) {
-    this.__phase = 'teardown';
     this.finish();
   }
 };
@@ -246,7 +245,7 @@ TestSuite.prototype.runTest = function(testIndex) {
     process.addListener('uncaughtException', errorListener);
 
     var exitListener = function() {
-      sys.error("\n\nOoops! The process excited in the middle of the test '" + t.__name + "'\nDid you forget to finish it?\n");
+      sys.error("\n\nOoops! The process exited in the middle of the test '" + t.__name + "'\nDid you forget to finish it?\n");
     };
     process.addListener('exit', exitListener);
   }
@@ -286,7 +285,7 @@ TestSuite.prototype.runTest = function(testIndex) {
       suite.numFinishedTests++;
 
       if( wait ) {
-        process.stdio.writeError(t.__symbol);
+        process.binding('stdio').writeError(t.__symbol);
         process.removeListener('uncaughtException', errorListener);
         process.removeListener('exit', exitListener);
         suite.runTest(testIndex+1);
@@ -299,6 +298,7 @@ TestSuite.prototype.runTest = function(testIndex) {
 
     try {
       if(suite._teardown) {
+        t.__phase = 'teardown';
         if( suite._teardown.length == 0 ) {
           suite._teardown.call(t);
           teardownCallback();

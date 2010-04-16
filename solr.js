@@ -159,7 +159,7 @@ exports.createClient = function (host, port, core) {
     if (options.data) {
       request.write(options.data, options.requestEncoding || 'utf8');
     }
-    request.close();
+    request.end();
   };
   return client;
 };
