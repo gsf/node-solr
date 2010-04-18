@@ -21,5 +21,5 @@ fs.readdirSync(path.dirname(module.filename)).forEach(function (filename) {
 asyncTesting.runSuites(exports);
 
 // Contingent upon async_testing acceptance
-//asyncTesting.runSuitesForPaths([path.dirname(module.filename)]);
+//asyncTesting.runSuitesInPaths([path.dirname(module.filename)]);
 
