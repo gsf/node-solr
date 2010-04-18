@@ -1,4 +1,4 @@
-var asyncTesting = require("./async_testing");
+var asyncTesting = require("async_testing");
 var solr = require("../solr");
 
 var suite = new asyncTesting.TestSuite();
