@@ -134,9 +134,6 @@ exports.getError = function (errorMessage) {
 exports.createClient = function (host, port, core) {
   var client = new Client(host, port, core);
   client.httpClient = http.createClient(client.port, client.host);
-  client.httpClient.addListener("error", function (e) {
-    throw "Unable to connect to Solr";
-  });
   client.sendRequest = function (options, callback) {
     var request = this.httpClient.request(options.method.toUpperCase(), 
       options.path, options.headers);
