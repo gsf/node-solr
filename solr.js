@@ -1,7 +1,6 @@
 var http = require("http");
 var libxml = require("libxmljs");
 var querystring = require("querystring");
-var sys = require("sys");
 
 // callback || noop borrowed from node/lib/fs.js
 function noop () {};
@@ -122,6 +121,9 @@ Client.prototype.update = function (data, callback) {
 };
 
 exports.getStatus = function (statusMessage) {
+  if (!statusMessage) {
+    return 1;
+  }
   var doc = libxml.parseXmlString(statusMessage);
   return doc.get("//int[@name='status']").text();
 };
@@ -139,8 +141,6 @@ exports.createClient = function (host, port, core) {
       options.path, options.headers);
     var buffer = '';
     request.addListener("response", function (response) {
-      //sys.puts(response.statusCode);
-      //sys.p(response.headers);
       response.addListener("data", function (chunk) {
         buffer += chunk;
       });
