@@ -4,9 +4,6 @@ var solr = require("../solr");
 var suite = new asyncTesting.TestSuite();
 suite.setup(function () {
   this.client = solr.createClient();
-  this.client.httpClient.addListener("error", function (e) {
-    throw new Error("Unable to connect to Solr");
-  });
 });
 suite.addTests({
   add1: function (assert, finished) {
@@ -24,9 +21,9 @@ suite.addTests({
   },
   add2: function (assert, finished) {
     var doc = {
-      id: "2",
+      id: 2,
       fizzbuzz_t: "bar",
-      wakak_i: "5"
+      wakak_i: 5
     };
     var options = {};
     var callback = function (err, response) {
@@ -36,7 +33,7 @@ suite.addTests({
     this.client.add(doc, options, callback);
   },
   delById: function (assert, finished) {
-    var id = "1";
+    var id = 1;
     var query = null;
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
