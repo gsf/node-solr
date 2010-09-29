@@ -10,10 +10,9 @@ http://libxmljs.squishtech.com/ and copy libxmljs.node to
 
 For testing, node-solr depends on node-async-testing, found at 
 http://github.com/bentomas/node-async-testing. Run all tests with 
-"node test/all.js".
+"node test/all.js". You need to have Solr running at 127.0.0.1:8983.
 
-See tests for usage.  Here's a quick example, assuming Solr is running
-at 127.0.0.1:8983:
+See tests for usage. Here's a quick example:
 
     var solr = require("solr");
     var sys = require("sys");
