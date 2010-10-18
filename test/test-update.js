@@ -5,6 +5,12 @@ var suite = new asyncTesting.TestSuite();
 suite.setup(function () {
   this.client = solr.createClient();
 });
+suite.teardown(function () {
+  // clean up by deleting all records
+  var id = null;
+  var query = "*:*";
+  this.client.del(id, query);
+});
 suite.addTests({
   add1: function (assert, finished) {
     var doc = {
