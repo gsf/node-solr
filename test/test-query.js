@@ -37,6 +37,15 @@ suite.addTests({
       finished();
     };
     this.client.rawQuery(queryParams, callback);
+  },
+  errorQuery: function (assert, finished) {
+    var query = "bob:poodle";
+    var options = null;
+    var callback = function (err, response) {
+      assert.equal(err, "undefined field bob");
+      finished();
+    };
+    this.client.query(query, options, callback);
   }
 });
 
