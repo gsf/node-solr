@@ -112,7 +112,7 @@ Client.prototype.update = function (data, callback) {
     method: "POST",
     path: updatePath,
     headers: {
-      "Content-Length": data.length, 
+      "Content-Length": Buffer.byteLength(data), 
       "Host": this.fullHost
     },
     data: data,

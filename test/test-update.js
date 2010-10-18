@@ -32,6 +32,19 @@ suite.addTests({
     };
     this.client.add(doc, options, callback);
   },
+  addUnicode: function (assert, finished) {
+    var doc = {
+      id: 3,
+      fizzbuzz_t: "bar",
+      unimath_t: "½ + ¼ = ¾"
+    };
+    var options = {};
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.add(doc, options, callback);
+  },
   delById: function (assert, finished) {
     var id = 1;
     var query = null;
