@@ -1,5 +1,4 @@
 var http = require("http");
-var libxml = require("libxmljs");
 var querystring = require("querystring");
 
 // callback || noop borrowed from node/lib/fs.js
@@ -21,16 +20,11 @@ Client.prototype.add = function (doc, options, callback) {
   if (options.commitWithin !== undefined) {
     addParams["commitWithin"] = options.commitWithin;
   }
-  var xmldoc = new libxml.Document(function (n) {
-    n.node("add", addParams, function (n) {
-      n.node("doc", function (n) {
-        for (field in doc) {
-          n.node("field", {name: field}, doc[field]);
-        }
-      });
-    });
-  });
-  var data = xmldoc.toString();
+  var data = "<add><doc>";
+  for (field in doc) {
+    data = data + '<field name = "' + field + '">' + doc[field] + '</field>';
+  }
+  data = data + "</doc></add>";
   this.update(data, callback);
 };
 
@@ -40,29 +34,26 @@ Client.prototype.commit = function (options, callback) {
 };
 
 Client.prototype.del = function (id, query, callback) {
-  var xmldoc = new libxml.Document(function (n) {
-    n.node("delete", function (n) {
-      if (id) {
-        if (id.constructor === Array) {
-          for (var i=0; i<id.length; i++) {
-            n.node("id", id[i]);
-          }
-        } else {
-          n.node("id", id);
-        }
+  var data = "<delete>";
+  if (id) {
+    if (id.constructor === Array) {
+      for (var i=0; i<id.length; i++) {
+        data = data + "<id>" + id[i] + "</id>";
       }
-      if (query) {
-        if (query.constructor === Array) {
-          for (var i=0; i<query.length; i++) {
-            n.node("query", query[i]);
-          }
-        } else {
-          n.node("query", query);
-        }
+    } else {
+      data = data + "<id>" + id + "</id>";
+    }
+  }
+  if (query) {
+    if (query.constructor === Array) {
+      for (var i=0; i<query.length; i++) {
+        data = data + "<query>" + query[i] + "</query>";
       }
-    });
-  });
-  var data = xmldoc.toString();
+    } else {
+      data = data + "<query>" + query + "</query>";
+    }
+  }
+  data = data + "</delete>";
   this.update(data, callback);
 };
 
@@ -124,13 +115,13 @@ exports.getStatus = function (statusMessage) {
   if (!statusMessage) {
     return 1;
   }
-  var doc = libxml.parseXmlString(statusMessage);
-  return doc.get("//int[@name='status']").text();
+  var statusTag = '<int name="status">';
+  return statusMessage.charAt(statusMessage.indexOf(statusTag) + 
+      statusTag.length);
 };
 
 exports.getError = function (errorMessage) {
-  var doc = libxml.parseHtmlString(errorMessage);
-  return doc.get("//pre").text();
+  return errorMessage.match(/<pre>(.+)<\/pre>/)[1];
 };
 
 exports.createClient = function (host, port, core) {
