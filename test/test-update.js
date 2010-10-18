@@ -10,6 +10,7 @@ suite.teardown(function () {
   var id = null;
   var query = "*:*";
   this.client.del(id, query);
+  this.client.commit();
 });
 suite.addTests({
   add1: function (assert, finished) {
