@@ -124,6 +124,12 @@ exports.getError = function (errorMessage) {
   return errorMessage.match(/<pre>(.+)<\/pre>/)[1];
 };
 
+exports.escape = function (query) {
+  return query.replace(/\\?([&|+\-!(){}[\]^"~*?\:]{1})/g, function(_, c) {
+    return '\\' + c;
+  });
+}
+
 exports.createClient = function (host, port, core) {
   var client = new Client(host, port, core);
   client.httpClient = http.createClient(client.port, client.host);
