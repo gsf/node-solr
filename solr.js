@@ -130,12 +130,16 @@ exports.createClient = function (host, port, core) {
   client.sendRequest = function (options, callback) {
     var request = this.httpClient.request(options.method.toUpperCase(), 
       options.path, options.headers);
+    if (options.data) {
+      request.write(options.data, options.requestEncoding || 'utf8');
+    }
+    request.end();
     var buffer = '';
-    request.addListener("response", function (response) {
-      response.addListener("data", function (chunk) {
+    request.on("response", function (response) {
+      response.on("data", function (chunk) {
         buffer += chunk;
       });
-      response.addListener("end", function () {
+      response.on("end", function () {
         if (response.statusCode !== 200) {
           var err = exports.getError(buffer);
           callback(err, null);
@@ -144,10 +148,6 @@ exports.createClient = function (host, port, core) {
         }
       });
     });
-    if (options.data) {
-      request.write(options.data, options.requestEncoding || 'utf8');
-    }
-    request.end();
   };
   return client;
 };
