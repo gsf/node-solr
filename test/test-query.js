@@ -45,7 +45,7 @@ suite.addTests({
     };
     this.client.query(query, options, callback);
   },
-  unescapedValues: function (assert, finished) {
+  unescapedValue: function (assert, finished) {
     var query = "bar_t:11:15";
     var options = null;
     var callback = function (err, response) {
@@ -54,7 +54,7 @@ suite.addTests({
     };
     this.client.query(query, options, callback);
   },
-  escapedValues: function (assert, finished) {
+  escapedValue: function (assert, finished) {
     var query = "bar_t:" + solr.valueEscape("11:00 + 15");
     var options = null;
     var callback = function (err, response) {
