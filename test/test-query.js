@@ -1,5 +1,6 @@
 var asyncTesting = require("async_testing");
 var solr = require("../solr");
+var sys = require("sys");
 
 var suite = new asyncTesting.TestSuite();
 suite.setup(function () {
@@ -19,49 +20,45 @@ suite.teardown(function () {
   this.client.commit();
 });
 suite.addTests({
-  query: function (assert, finished) {
+  query: function (assert, finished, test) {
     var query = "wakak_i:5";
-    var options = null;
     var callback = function (err, response) {
       assert.equal(JSON.parse(response).response.numFound, 1);
       finished();
     };
-    this.client.query(query, options, callback);
+    test.client.query(query, callback);
   },
-  rawQuery: function (assert, finished) {
+  rawQuery: function (assert, finished, test) {
     var queryParams = "q=fizzbuzz_t:foo"
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.rawQuery(queryParams, callback);
+    test.client.rawQuery(queryParams, callback);
   },
-  errorQuery: function (assert, finished) {
+  errorQuery: function (assert, finished, test) {
     var query = "bob:poodle";
-    var options = null;
     var callback = function (err, response) {
       assert.equal(err, "undefined field bob");
       finished();
     };
-    this.client.query(query, options, callback);
+    test.client.query(query, callback);
   },
-  unescapedValue: function (assert, finished) {
+  unescapedValue: function (assert, finished, test) {
     var query = "bar_t:11:15";
-    var options = null;
     var callback = function (err, response) {
       assert.ok(err);
       finished();
     };
-    this.client.query(query, options, callback);
+    test.client.query(query, callback);
   },
-  escapedValue: function (assert, finished) {
+  escapedValue: function (assert, finished, test) {
     var query = "bar_t:" + solr.valueEscape("11:00 + 15");
-    var options = null;
     var callback = function (err, response) {
       assert.equal(JSON.parse(response).response.numFound, 1);
       finished();
     };
-    this.client.query(query, options, callback);
+    test.client.query(query, callback);
   }
 });
 

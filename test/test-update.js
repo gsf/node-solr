@@ -19,12 +19,11 @@ suite.addTests({
       fizzbuzz_t: "foo",
       wakak_i: "5"
     };
-    var options = {};
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.add(doc, options, callback);
+    this.client.add(doc, callback);
   },
   add2: function (assert, finished) {
     var doc = {
@@ -32,12 +31,11 @@ suite.addTests({
       fizzbuzz_t: "bar",
       wakak_i: 5
     };
-    var options = {};
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.add(doc, options, callback);
+    this.client.add(doc, callback);
   },
   addUnicode: function (assert, finished) {
     var doc = {
@@ -45,7 +43,21 @@ suite.addTests({
       fizzbuzz_t: "bar",
       unimath_t: "½ + ¼ = ¾"
     };
-    var options = {};
+    var callback = function (err, response) {
+      assert.equal(solr.getStatus(response), 0);
+      finished();
+    };
+    this.client.add(doc, callback);
+  },
+  addNoOverwrite: function (assert, finished) {
+    var doc = {
+      id: 4,
+      fizzbuzz_t: "foo",
+      wakak_i: "7",
+    };
+    var options = {
+      overwrite: false
+    };
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
@@ -75,20 +87,18 @@ suite.addTests({
       fizzbuzz_t: "foo",
       wakak_i: "5",
     };
-    var options = {};
     var callback = function (err, response) {
       assert.equal(err, "Document [null] missing required field: id");
       finished();
     };
-    this.client.add(doc, options, callback);
+    this.client.add(doc, callback);
   },
   commit: function (assert, finished) {
-    var options = {};
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.commit(options, callback);
+    this.client.commit(callback);
   },
   add3: function (assert, finished) {
     var doc = {
@@ -96,28 +106,25 @@ suite.addTests({
       fizzbuzz_t: "fizz",
       wakak_i: "5"
     };
-    var options = {};
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.add(doc, options, callback);
+    this.client.add(doc, callback);
   },
   rollback: function (assert, finished) {
-    var options = {};
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.rollback(options, callback);
+    this.client.rollback(callback);
   },
   optimize: function (assert, finished) {
-    var options = {};
     var callback = function (err, response) {
       assert.equal(solr.getStatus(response), 0);
       finished();
     };
-    this.client.optimize(options, callback);
+    this.client.optimize(callback);
   }
 });
 

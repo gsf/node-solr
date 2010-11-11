@@ -12,6 +12,10 @@ var Client = function (host, port, core) {
 };
 
 Client.prototype.add = function (doc, options, callback) {
+  if (callback === undefined) {
+    callback = options;
+    options = {};
+  }
   options = options || {};
   var addParams = {};
   if (options.overwrite !== undefined) {
@@ -28,7 +32,7 @@ Client.prototype.add = function (doc, options, callback) {
   this.update(data, callback);
 };
 
-Client.prototype.commit = function (options, callback) {
+Client.prototype.commit = function (callback) {
   var data = "<commit/>";
   this.update(data, callback);
 };
@@ -57,12 +61,16 @@ Client.prototype.del = function (id, query, callback) {
   this.update(data, callback);
 };
 
-Client.prototype.optimize = function (options, callback) {
+Client.prototype.optimize = function (callback) {
   var data = "<optimize/>";
   this.update(data, callback);
 };
 
 Client.prototype.query = function (query, options, callback) {
+  if (callback === undefined) {
+    callback = options;
+    options = {};
+  }
   var queryParams = options || {};
   queryParams.q = query;
   queryParams.wt = "json";
@@ -87,7 +95,7 @@ Client.prototype.rawQuery = function (queryParams, callback) {
   this.sendRequest(requestOptions, callback || noop);
 };
 
-Client.prototype.rollback = function (options, callback) {
+Client.prototype.rollback = function (callback) {
   var data = "<rollback/>";
   this.update(data, callback);
 };
