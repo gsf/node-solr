@@ -121,11 +121,11 @@ exports.getStatus = function (statusMessage) {
 };
 
 exports.getError = function (errorMessage) {
-  return errorMessage.match(/<pre>(.+)<\/pre>/)[1];
+  return errorMessage.match(/<pre>([\s\S]+)<\/pre>/)[1];
 };
 
-exports.escape = function (query) {
-  return query.replace(/\\?([&|+\-!(){}[\]^"~*?\:]{1})/g, function(_, c) {
+exports.valueEscape = function (query) {
+  return query.replace(/\\?([&|+\-!(){}[\]^"~*?\:]{1})/g, function(str, c) {
     return '\\' + c;
   });
 }

@@ -7,7 +7,8 @@ suite.setup(function () {
   var doc = {
     id: "1",
     fizzbuzz_t: "foo",
-    wakak_i: "5"
+    wakak_i: "5",
+    bar_t: "11:15 is 11:00 + 15 minutes"
   };
   this.client.add(doc);
   this.client.commit();
@@ -40,6 +41,24 @@ suite.addTests({
     var options = null;
     var callback = function (err, response) {
       assert.equal(err, "undefined field bob");
+      finished();
+    };
+    this.client.query(query, options, callback);
+  },
+  unescapedValues: function (assert, finished) {
+    var query = "bar_t:11:15";
+    var options = null;
+    var callback = function (err, response) {
+      assert.ok(err);
+      finished();
+    };
+    this.client.query(query, options, callback);
+  },
+  escapedValues: function (assert, finished) {
+    var query = "bar_t:" + solr.valueEscape("11:00 + 15");
+    var options = null;
+    var callback = function (err, response) {
+      assert.equal(JSON.parse(response).response.numFound, 1);
       finished();
     };
     this.client.query(query, options, callback);
