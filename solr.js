@@ -72,10 +72,48 @@ Client.prototype.query = function (query, options, callback) {
     options = {};
   }
   var queryParams = options || {};
+
+  var listParams = [];
+  var remove = [];
+  for (o in queryParams) {
+    var value = queryParams[o];
+    if (Array.isArray(value)) {
+      listParams.push(value.map(function(v) {
+        return o + '=' + v;
+      }).join('&'));
+      remove.push(o);
+    }
+  };
+
+  var callback_wrapper = function(error, response) {
+    var responseObj = JSON.parse(response);
+    if (responseObj.facet_counts && (facet_fields = responseObj.facet_counts.facet_fields)) {
+      for (field in facet_fields) {
+        var raw_facets = facet_fields[field];
+        var facets = [];
+        raw_facets.forEach(function(facet, index) {
+          if (index % 2 == 0) {
+            facets.push({
+              'value' : facet,
+              'count' : raw_facets[index + 1]
+            });
+          }
+        });
+        responseObj.facet_counts.facet_fields[field] = facets;
+      }
+    }
+    callback(error, response, responseObj);
+  }
+
+  remove.forEach(function(el) {
+    delete queryParams[el];
+  });
+
   queryParams.q = query;
   queryParams.wt = "json";
   queryParams = querystring.stringify(queryParams);
-  this.rawQuery(queryParams, callback);
+  var query = [queryParams, listParams].join('&');
+  this.rawQuery(query, callback_wrapper);
 };
 
 Client.prototype.rawQuery = function (queryParams, callback) {
