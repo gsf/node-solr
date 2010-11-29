@@ -74,7 +74,7 @@ Client.prototype.query = function (query, options, callback) {
   var queryParams = options || {};
   queryParams.q = query;
   queryParams.wt = "json";
-  queryParams = querystring.stringify(queryParams);
+  queryParams = querystring.stringify(queryParams, '&', '=', false);
   this.rawQuery(queryParams, callback);
 };
 
