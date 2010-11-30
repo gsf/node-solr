@@ -111,6 +111,7 @@ Client.prototype.update = function (data, callback) {
     method: "POST",
     path: updatePath,
     headers: {
+      "Connection": "Keep-Alive",
       "Content-Length": Buffer.byteLength(data), 
       "Host": this.fullHost
     },
@@ -141,8 +142,9 @@ exports.valueEscape = function (query) {
 exports.createClient = function (host, port, core) {
   var client = new Client(host, port, core);
   client.httpClient = http.createClient(client.port, client.host);
+  client.destroy = function () {client.httpClient.destroy()};
   client.sendRequest = function (options, callback) {
-    var request = this.httpClient.request(options.method.toUpperCase(), 
+    var request = client.httpClient.request(options.method.toUpperCase(), 
       options.path, options.headers);
     if (options.data) {
       request.write(options.data, options.requestEncoding || 'utf8');
@@ -155,7 +157,7 @@ exports.createClient = function (host, port, core) {
       });
       response.on("end", function () {
         if (response.statusCode !== 200) {
-          var err = exports.getError(buffer);
+          var err = new Error(exports.getError(buffer));
           callback(err, null);
         } else {
           callback(null, buffer);

@@ -1,7 +1,3 @@
-var solr = require('../solr');
-
-var client = solr.createClient();
-
 // Clean up index
 exports.delAll = function (test) {
   test.expect(1);
