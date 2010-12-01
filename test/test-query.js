@@ -1,88 +1,42 @@
-var solr = require('../solr');
+var common = require('./common');
+var assert = common.assert;
+var solr = common.solr;
 
-var client = solr.createClient();
+var client = common.createClient();
 
-// Clean up index
-exports.delAll = function (test) {
-  test.expect(1);
-  client.del(null, '*:*', function () {
-    client.commit(function (err, res) {
-      test.equal(solr.getStatus(res), 0);
-      test.done();
-    });
-  });
-};
-  
-// Add a document for querying
-exports.add = function (test) {
-  test.expect(1);
+client.del(null, '*:*', function (err) {  // Clean up index
+  if (err) throw err;
   var doc = {
     id: "1",
     fizzbuzz_t: "foo",
     wakak_i: "5",
     bar_t: "11:15 is 11:00 + 15 minutes"
   };
-  client.add(doc, function () {
-    client.commit(function (err, res) {
-      test.equal(solr.getStatus(res), 0);
-      test.done();
+  client.add(doc, function (err) {
+    if (err) throw err;
+    client.commit(function (err) {
+      if (err) throw err;
+      var query = "wakak_i:5";
+      client.query(query, function (err, res) {
+        assert.equal(JSON.parse(res).response.numFound, 1);
+      });
+      var queryParams = "q=fizzbuzz_t:foo"
+      client.rawQuery(queryParams, function (err, res) {
+        assert.equal(solr.getStatus(res), 0);
+      });
+      var query = "bob:poodle";
+      client.query(query, function (err) {
+        assert.equal(err.message, "undefined field bob");
+      });
+      var query = "bar_t:11:15";
+      client.query(query, function (err) {
+        assert.ok(err, 'Unescaped query did not error');
+      });
+      var query = "bar_t:" + solr.valueEscape("11:00 + 15");
+      client.query(query, function (err, res) {
+        assert.equal(JSON.parse(res).response.numFound, 1);
+      });
     });
   });
-};
+});
 
-exports.query = function (test) {
-  test.expect(1);
-  var query = "wakak_i:5";
-  client.query(query, function (err, res) {
-    test.equal(JSON.parse(res).response.numFound, 1);
-    test.done();
-  });
-};
-
-exports.rawQuery = function (test) {
-  test.expect(1);
-  var queryParams = "q=fizzbuzz_t:foo"
-  client.rawQuery(queryParams, function (err, response) {
-    test.equal(solr.getStatus(response), 0);
-    test.done();
-  });
-};
-
-exports.errorQuery = function (test) {
-  test.expect(1);
-  var query = "bob:poodle";
-  client.query(query, function (err, response) {
-    test.equal(err.message, "undefined field bob");
-    test.done();
-  });
-};
-
-exports.unescapedValue = function (test) {
-  test.expect(1);
-  var query = "bar_t:11:15";
-  client.query(query, function (err, response) {
-    test.ok(err);
-    test.done();
-  });
-};
-
-exports.escapedValue = function (test) {
-  test.expect(1);
-  var query = "bar_t:" + solr.valueEscape("11:00 + 15");
-  client.query(query, function (err, response) {
-    test.equal(JSON.parse(response).response.numFound, 1);
-    test.done();
-  });
-};
-
-// Clean up index
-exports.delAll2 = function (test) {
-  test.expect(1);
-  client.del(null, '*:*', function () {
-    client.commit(function (err, res) {
-      test.equal(solr.getStatus(res), 0);
-      test.done();
-    });
-  });
-};
-  

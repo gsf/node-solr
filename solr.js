@@ -80,10 +80,10 @@ Client.prototype.query = function (query, options, callback) {
 
 Client.prototype.rawQuery = function (queryParams, callback) {
   var queryPath, requestOptions;
-  if (this.core === undefined) {
-    queryPath = "/solr/select?";
-  } else {
+  if (this.core) {
     queryPath = "/solr/" + this.core + "/select?";
+  } else {
+    queryPath = "/solr/select?";
   }
   requestOptions = {
     method: "GET",
@@ -102,10 +102,10 @@ Client.prototype.rollback = function (callback) {
 
 Client.prototype.update = function (data, callback) {
   var updatePath, requestOptions;
-  if (this.core === undefined) {
-    updatePath = "/solr/update";
-  } else {
+  if (this.core) {
     updatePath = "/solr/" + this.core + "/update";
+  } else {
+    updatePath = "/solr/update";
   }
   requestOptions = {
     method: "POST",
@@ -143,6 +143,7 @@ exports.createClient = function (host, port, core) {
   var client = new Client(host, port, core);
   client.httpClient = http.createClient(client.port, client.host);
   client.destroy = function () {client.httpClient.destroy()};
+  client.on = function (eventType, fn) {client.httpClient.on(eventType, fn)};
   client.sendRequest = function (options, callback) {
     var request = client.httpClient.request(options.method.toUpperCase(), 
       options.path, options.headers);
