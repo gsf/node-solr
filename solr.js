@@ -114,7 +114,10 @@ Client.prototype.update = function (data, callback) {
     method: "POST",
     path: updatePath,
     headers: {
-      "Connection": "Keep-Alive",
+      // Keep-Alive needed for v0.2.5, but sometimes leaves 
+      // connection hanging that must be manually destroyed
+      // http://groups.google.com/group/nodejs-dev/browse_thread/thread/e9044c0778ac67d0
+      "Connection": "Keep-Alive", 
       "Content-Length": Buffer.byteLength(data), 
       "Host": this.fullHost
     },
