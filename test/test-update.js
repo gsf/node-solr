@@ -68,7 +68,7 @@ client.del(null, '*:*', function(err) {  // Clean up index
     client.add(doc, function(err, res) {
       assert.equal(err.message, 'Document [null] missing required field: id', 'Add document without ID should fail.');
     });
-    client.add({id: 5, fizzbuzz_t: 'bar'}, {commit:true}, function(err, res) {
+    client.add({id: 5, fizzbuzz_t: 'bar'}, {commit: true}, function(err, res) {
       if (err) throw err;
       client.add({id: 5, fizzbuzz_t: 'fizz'}, function(err, res) {
         if (err) throw err;
