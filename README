@@ -10,7 +10,6 @@ running at 127.0.0.1:8983.
 See tests for usage. Here's a quick example:
 
     var solr = require('solr');
-    var sys = require('sys');
 
     var client = solr.createClient();
     var doc1 = {
