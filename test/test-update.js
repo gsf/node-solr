@@ -1,150 +1,93 @@
-var solr = require("../solr");
+var common = require('./common');
+var assert = common.assert;
+var client = common.createClient();
+var print = common.print;
+var solr = common.solr;
 
-var client = solr.createClient();
+common.expected = 9;
 
-// Clean up index
-exports.delAll = function (test) {
-  test.expect(1);
-  client.del(null, '*:*', function () {
-    client.commit(function (err, res) {
-      test.equal(solr.getStatus(res), 0);
-      test.done();
+client.del(null, '*:*', function(err) {  // Clean up index
+  if (err) throw err;
+  client.commit(function(err) {
+    if (err) throw err;
+    var doc = {
+      id: '1',
+      fizzbuzz_t: 'foo',
+      wakak_i: '5'
+    };
+    client.add(doc, function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Add document failed.');
+    });
+    doc = {
+      id: 2,
+      fizzbuzz_t: 'bar',
+      wakak_i: 5
+    };
+    client.add(doc, function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Add document with int ID failed.');
+    });
+    doc = {
+      id: 3,
+      fizzbuzz_t: 'bar',
+      unimath_t: '½ + ¼ = ¾'
+    };
+    client.add(doc, function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Add document with unicode failed.');
+    });
+    doc = {
+      id: 4,
+      fizzbuzz_t: 'foo',
+      wakak_i: '7',
+    };
+    var options = {
+      overwrite: false
+    };
+    client.add(doc, options, function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Add document with false overwrite option failed.');
+    });
+    var id = 1;
+    var query = null;
+    client.del(id, query, function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Delete document by ID failed.');
+    });
+    id = null;
+    query = 'fizzbuzz_t:bar';
+    client.del(id, query, function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Delete document by query failed.');
+    });
+    doc = {
+      fizzbuzz_t: 'foo',
+      wakak_i: '5',
+    };
+    client.add(doc, function(err, res) {
+      assert.equal(err.message, 'Document [null] missing required field: id', 'Add document without ID should fail.');
+    });
+    client.add({id: 5, fizzbuzz_t: 'bar'}, {commit:true}, function(err, res) {
+      if (err) throw err;
+      client.add({id: 5, fizzbuzz_t: 'fizz'}, function(err, res) {
+        if (err) throw err;
+        client.rollback(function(err, res) {
+          if (err) throw err;
+          client.commit(function(err, res) {
+            if (err) throw err;
+            client.query('id:5', function(err, res) {
+              if (err) throw err;
+              assert.equal(JSON.parse(res).response.docs[0].fizzbuzz_t, 'bar', 'Rollback failed.');
+            });
+          });
+        });
+      });
+    });
+    client.optimize(function(err, res) {
+      if (err) throw err;
+      assert.equal(solr.getStatus(res), 0, 'Optimize failed.');
     });
   });
-};
-  
-exports.add1 = function (test) {
-  test.expect(1);
-  var doc = {
-    id: "1",
-    fizzbuzz_t: "foo",
-    wakak_i: "5"
-  };
-  client.add(doc, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.add2 = function (test) {
-  test.expect(1);
-  var doc = {
-    id: 2,
-    fizzbuzz_t: "bar",
-    wakak_i: 5
-  };
-  client.add(doc, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.addUnicode = function (test) {
-  test.expect(1);
-  var doc = {
-    id: 3,
-    fizzbuzz_t: "bar",
-    unimath_t: "½ + ¼ = ¾"
-  };
-  client.add(doc, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.addNoOverwrite = function (test) {
-  test.expect(1);
-  var doc = {
-    id: 4,
-    fizzbuzz_t: "foo",
-    wakak_i: "7",
-  };
-  var options = {
-    overwrite: false
-  };
-  client.add(doc, options, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.delById = function (test) {
-  test.expect(1);
-  var id = 1;
-  var query = null;
-  client.del(id, query, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.delByQuery = function (test) {
-  test.expect(1);
-  var id = null;
-  var query = "fizzbuzz_t:bar";
-  client.del(id, query, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.addNoId = function (test) {
-  test.expect(1);
-  var doc = {
-    fizzbuzz_t: "foo",
-    wakak_i: "5",
-  };
-  client.add(doc, function (err, res) {
-    test.equal(err.message, "Document [null] missing required field: id");
-    test.done();
-  });
-};
-
-exports.commit = function (test) {
-  test.expect(1);
-  client.commit(function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.add3 = function (test) {
-  test.expect(1);
-  var doc = {
-    id: "3",
-    fizzbuzz_t: "fizz",
-    wakak_i: "5"
-  };
-  client.add(doc, function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.rollback = function (test) {
-  test.expect(1);
-  client.rollback(function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-exports.optimize = function (test) {
-  test.expect(1);
-  client.optimize(function (err, res) {
-    test.equal(solr.getStatus(res), 0);
-    test.done();
-  });
-};
-
-// Clean up index
-exports.delAll2 = function (test) {
-  test.expect(1);
-  client.del(null, '*:*', function () {
-    client.commit(function (err, res) {
-      test.equal(solr.getStatus(res), 0);
-      test.done();
-    });
-  });
-};
+});
 

@@ -24,6 +24,9 @@ Client.prototype.add = function (doc, options, callback) {
   if (options.commitWithin !== undefined) {
     addParams["commitWithin"] = options.commitWithin;
   }
+  if (options.commit !== undefined) {
+    addParams["commit"] = Boolean(options.commit);
+  }
   var data = "<add><doc>";
   for (field in doc) {
     data = data + '<field name = "' + field + '">' + doc[field] + '</field>';

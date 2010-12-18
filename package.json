@@ -4,5 +4,5 @@
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
 , "engines" : {"node": ">= 0.2.0" }
 , "main" : "solr"
-, "scripts" : { "test" : "node test/all.js" }
+, "scripts" : { "test" : "make test" }
 }

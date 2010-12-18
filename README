@@ -4,11 +4,8 @@ Solr module for Node.js
 Node.js: http://github.com/ry/node
 Solr: http://lucene.apache.org/solr/
 
-For testing, node-solr depends on node-async-testing, found at 
-http://github.com/bentomas/node-async-testing. Run all tests with 
-"node test/all.js". You need to have Solr running at 127.0.0.1:8983.
-Be aware that some tests are failing occasionally due to async 
-issues in the test suite.
+Run tests with `make test`. Edit "test/common.js" if you don't have Solr 
+running at 127.0.0.1:8983. 
 
 See tests for usage. Here's a quick example:
 
