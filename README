@@ -9,44 +9,41 @@ running at 127.0.0.1:8983.
 
 See tests for usage. Here's a quick example:
 
-    var solr = require("solr");
-    var sys = require("sys");
+    var solr = require('solr');
+    var sys = require('sys');
 
     var client = solr.createClient();
     var doc1 = {
-      id: "1",
-      title_t: "Foo bar",
-      text_t: "Fizz buzz frizzle"
+      id: '1',
+      title_t: 'Foo bar',
+      text_t: 'Fizz buzz frizzle'
     };
     var doc2 = {
-      id: "2",
-      title_t: "Far boo",
-      text_t: "Wuzz fizz drizzle"
+      id: '2',
+      title_t: 'Far boo',
+      text_t: 'Wuzz fizz drizzle'
     };
-    var callback = function (err, response) {
-      if (err) {
-        throw err;
-      }
-      sys.puts("Document added");
+    var callback = function(err, response) {
+      if (err) throw err;
+      console.log('Document added');
     };
     client.add(doc1, callback);
     client.add(doc2, callback);
     client.commit();
 
-    var query = "text_t:fizz"
-    callback = function (err, response) {
+    var query = 'text_t:fizz'
+    callback = function(err, response) {
       var responseObj = JSON.parse(response);
-      sys.puts("A search for \"" + query + "\" returned " + 
-          responseObj.response.numFound + " documents.");
-      sys.puts("First doc title: " + responseObj.response.docs[0].title_t);
-      sys.puts("Second doc title: " + responseObj.response.docs[1].title_t);
+      console.log('A search for "' + query + '" returned ' +
+          responseObj.response.numFound + ' documents.');
+      console.log('First doc title: ' + responseObj.response.docs[0].title_t);
+      console.log('Second doc title: ' + responseObj.response.docs[1].title_t);
     };
     client.query(query, callback);
 
     var id;
-    callback = function (err, response) {
-      sys.puts("Deleted all docs matching query \"" + query + "\"");
+    callback = function(err, response) {
+      console.log('Deleted all docs matching query "' + query + '"');
     };
     client.del(id, query, callback);
-    client.commit();
-
+    client.commit()
