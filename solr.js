@@ -27,11 +27,27 @@ Client.prototype.add = function (doc, options, callback) {
   if (options.commit !== undefined) {
     addParams["commit"] = Boolean(options.commit);
   }
-  var data = "<add><doc>";
-  for (field in doc) {
-    data = data + '<field name = "' + field + '">' + doc[field] + '</field>';
+  
+  var data  = "<add>"
+      ,docs = isIterable(doc) ? doc : [doc];
+  for (var i = 0; i < docs.length; i++) {
+    data += "<doc>";
+    
+    var doc = docs[i];
+    for (field in doc) if (doc.hasOwnProperty(field)) {
+      val = doc[field];
+    
+      if (!isIterable(val)) {
+        data += serializeAsScalar(field, val);
+      }
+      else {
+        data += serializeAsList(field, val);
+      }
+    }
+    data += "</doc>";
   }
-  data = data + "</doc></add>";
+  data += "</add>";
+  
   this.update(data, callback);
 };
 
@@ -126,6 +142,29 @@ Client.prototype.update = function (data, callback) {
   this.sendRequest(requestOptions, callback || noop);
 };
 
+function isIterable(val) {
+  return typeof val.forEach == 'function';
+}
+
+function serializeAsScalar(prop, val) {
+  val  = '' + val;
+  val  = val.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+  
+  return '<field name = "' + field + '">' + val + '</field>';
+}
+
+function serializeAsList(prop, list) {
+  var data = '';
+
+  list.forEach(function(val) {
+    if (!isIterable(val)) {
+      data += serializeAsScalar(prop, val);
+    }
+  });
+
+  return data;
+}
+
 exports.getStatus = function (statusMessage) {
   if (!statusMessage) {
     return 1;
@@ -136,7 +175,7 @@ exports.getStatus = function (statusMessage) {
 };
 
 exports.getError = function (errorMessage) {
-  return errorMessage.match(/<pre>([\s\S]+)<\/pre>/)[1];
+  return (errorMessage.match(/<pre>([\s\S]+)<\/pre>/) || ['', errorMessage])[1];
 };
 
 exports.valueEscape = function (query) {
@@ -174,5 +213,4 @@ exports.createClient = function (host, port, core) {
   };
   return client;
 };
-
 
