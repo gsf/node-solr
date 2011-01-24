@@ -2,7 +2,16 @@
 , "description" : "Solr module for Node.js"
 , "version" : "0.1.0"
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
-, "engines" : {"node": ">= 0.2.0" }
-, "main" : "solr"
+, "contributors" :
+  [ "Sergey Polzunov <sergey@polzunov.com>"
+  , "Isaac Z. Schlueter <i@izs.me>"
+  , "Blagovest Dachev <blago@dachev.com>"
+  ]
+, "engines" : { "node": ">=0.2.0" }
+, "main" : "lib/solr"
+, "repository" :
+  { "type" : "git"
+  , "url" : "http://github.com/gsf/node-solr.git"
+  }
 , "scripts" : { "test" : "make test" }
 }

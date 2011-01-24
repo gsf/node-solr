@@ -1,6 +1,6 @@
 var assert = require('assert');
 var print = exports.print = require('sys').print;
-var solr = exports.solr = require('../solr');
+var solr = exports.solr = require('../lib/solr');
 
 // Replace if different from defaults
 var HOST = '';  // 127.0.0.1
