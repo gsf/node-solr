@@ -38,7 +38,6 @@ client.del(null, '*:*', function(err) {  // Clean up index
           client.query('wakak_i:5', function(err, res) {
             if (err) throw err;
             assert.equal(JSON.parse(res).response.numFound, 3, 'Wrong number of docs in index.');
-            client.destroy();
           });
         });
       });

@@ -19,7 +19,6 @@ client.del(null, '*:*', function(err) {  // Clean up index
       assert.equal(solr.getStatus(res), 0, 'Add document with value with XML characters failed.');
       client.commit(function(err, res) {
         if (err) throw err;
-        client.destroy();
       });
     });
   });
