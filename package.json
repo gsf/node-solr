@@ -1,6 +1,6 @@
 { "name" : "solr"
 , "description" : "Solr module for Node.js"
-, "version" : "0.1.0"
+, "version" : "0.1.1"
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
 , "contributors" :
   [ "Sergey Polzunov <sergey@polzunov.com>"
