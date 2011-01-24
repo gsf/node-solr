@@ -1,5 +1,5 @@
 { "name" : "solr"
-, "description" : "Solr module for Node.js"
+, "description" : "A low-level Solr client"
 , "version" : "0.1.1"
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
 , "contributors" :
