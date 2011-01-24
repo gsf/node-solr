@@ -68,17 +68,17 @@ client.del(null, '*:*', function(err) {  // Clean up index
     client.add(doc, function(err, res) {
       assert.equal(err.message, 'Document [null] missing required field: id', 'Add document without ID should fail.');
     });
-    client.add({id: 5, fizzbuzz_t: 'bar'}, {commit: true}, function(err, res) {
+    client.add({id: 5, fizzbuzz_t: 'baz'}, function(err, res) {
       if (err) throw err;
-      client.add({id: 5, fizzbuzz_t: 'fizz'}, function(err, res) {
+      client.commit(function(err, res) {
         if (err) throw err;
-        client.rollback(function(err, res) {
+        client.add({id: 6, fizzbuzz_t: 'baz'}, function(err, res) {
           if (err) throw err;
-          client.commit(function(err, res) {
+          client.rollback(function(err, res) {
             if (err) throw err;
-            client.query('id:5', function(err, res) {
+            client.query('fizzbuzz_t:baz', function(err, res) {
               if (err) throw err;
-              assert.equal(JSON.parse(res).response.docs[0].fizzbuzz_t, 'bar', 'Rollback failed.');
+              assert.equal(JSON.parse(res).response.docs.length, 1, 'Rollback test failed.');
             });
           });
         });
