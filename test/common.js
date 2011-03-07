@@ -6,7 +6,7 @@ var solr = exports.solr = require('../lib/solr');
 var HOST = '';  // 127.0.0.1
 var PORT = '';  // 8983
 var CORE = '';  // No core
-var PATH = '';  // solr
+var PATH = '';  // /solr
 
 var count = 0;
 var wrapAssert = function(fn) {
