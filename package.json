@@ -1,11 +1,12 @@
 { "name" : "solr"
 , "description" : "A low-level Solr client"
-, "version" : "0.1.2"
+, "version" : "0.1.3"
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
 , "contributors" :
   [ "Sergey Polzunov <sergey@polzunov.com>"
   , "Isaac Z. Schlueter <i@izs.me>"
   , "Blagovest Dachev <blago@dachev.com>"
+  , "Miles Worthington <milesworthington@github>"
   ]
 , "engines" : { "node": ">=0.4.0" }
 , "main" : "lib/solr"
