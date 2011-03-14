@@ -1,7 +1,7 @@
 Solr module for Node.js
 
 
-Node.js: http://github.com/ry/node
+Node.js: http://github.com/joyent/node
 Solr: http://lucene.apache.org/solr/
 
 Run tests with `make test`. Edit "test/common.js" if you don't have Solr 
