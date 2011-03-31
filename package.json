@@ -7,6 +7,7 @@
   , "Isaac Z. Schlueter <i@izs.me>"
   , "Blagovest Dachev <blago@dachev.com>"
   , "Miles Worthington <milesworthington@github>"
+  , "VASMAN <vasman@hidev.it>"
   ]
 , "engines" : { "node": ">=0.4.0" }
 , "main" : "lib/solr"
