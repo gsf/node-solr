@@ -26,9 +26,9 @@ for (var fn in assert) {
 
 exports.createClient = function() {
   var client = solr.createClient(HOST, PORT, CORE, PATH);
-  //client.on('error', function (e) {
-  //  throw new Error('Unable to connect to Solr');
-  //});
+  client.on('error', function (e) {
+    throw new Error('Unable to connect to Solr');
+  });
   return client;
 };
 
