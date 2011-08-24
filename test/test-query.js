@@ -23,8 +23,7 @@ client.del(null, '*:*', function(err) {  // Clean up index
         if (err) throw err;
         assert.equal(JSON.parse(res).response.numFound, 1, 'Query failed.');
       });
-      var queryParams = 'q=fizzbuzz_t:foo'
-      client.rawQuery(queryParams, function(err, res) {
+      client.get('select?q=fizzbuzz_t:foo', function(err, res) {
         if (err) throw err;
         assert.equal(solr.getStatus(res), 0, 'Raw query failed.');
       });
