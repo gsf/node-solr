@@ -1,6 +1,6 @@
 { "name" : "solr"
 , "description" : "A low-level Solr client"
-, "version" : "0.1.4"
+, "version" : "0.1.5"
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
 , "contributors" :
   [ "Sergey Polzunov <sergey@polzunov.com>"
@@ -8,6 +8,7 @@
   , "Blagovest Dachev <blago@dachev.com>"
   , "Miles Worthington <milesworthington@github>"
   , "VASMAN <vasman@hidev.it>"
+  , "Lee Iverson <leei@ece.ubc.ca>"
   ]
 , "engines" : { "node": ">=0.4.0" }
 , "main" : "lib/solr"
