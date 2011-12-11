@@ -4,7 +4,7 @@ Solr module for Node.js
 Node.js: http://github.com/joyent/node
 Solr: http://lucene.apache.org/solr/
 
-Run tests with `make test`. Edit "test/common.js" if you don't have Solr 
+Run tests with `npm test`. Edit "test/common.js" if you don't have Solr 
 running at 127.0.0.1:8983. 
 
 See tests for usage. Here's a quick example:
