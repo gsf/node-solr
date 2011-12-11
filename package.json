@@ -9,6 +9,7 @@
   , "Miles Worthington <milesworthington@github>"
   , "VASMAN <vasman@hidev.it>"
   , "Lee Iverson <leei@ece.ubc.ca>"
+  , "V Sreekanth <sreeix@gmail.com>"
   ]
 , "engines" : { "node": ">=0.4.0" }
 , "main" : "lib/solr"
