@@ -66,7 +66,7 @@ client.del(null, '*:*', function(err) {  // Clean up index
       wakak_i: '5',
     };
     client.add(doc, function(err, res) {
-      assert.equal(err.message, 'Document [null] missing required field: id', 'Add document without ID should fail.');
+      assert.ok(/missing required field: id/.test(err.message), 'Add document without ID should fail.');
     });
     client.add({id: 5, fizzbuzz_t: 'baz'}, function(err, res) {
       if (err) throw err;
