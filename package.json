@@ -1,6 +1,6 @@
 { "name" : "solr"
 , "description" : "A low-level Solr client"
-, "version" : "0.2.0"
+, "version" : "0.2.1"
 , "author" : "Gabriel Farrell <gsf747@gmail.com>"
 , "contributors" :
   [ "Sergey Polzunov <sergey@polzunov.com>"
