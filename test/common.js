@@ -1,5 +1,5 @@
 var assert = require('assert');
-var print = exports.print = require('sys').print;
+var print = exports.print = require('util').print;
 var solr = exports.solr = require('../lib/solr');
 
 exports.createClient = function(options) {
