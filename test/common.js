@@ -1,5 +1,4 @@
 var assert = require('assert');
-var print = exports.print = require('sys').print;
 var solr = exports.solr = require('../lib/solr');
 
 exports.createClient = function(options) {
@@ -17,7 +16,7 @@ var wrapAssert = function(fn) {
   return function() {
     assert[fn].apply(this, arguments);
     count++;
-    print('.');
+    process.stdout.write('.');
   };
 };
 exports.assert = {};
@@ -29,5 +28,5 @@ for (var fn in assert) {
 }
 
 process.on('exit', function() {
-  print(' ran ' + count + ' of ' + exports.expected + ' tests.\n');
+  process.stdout.write(' ran ' + count + ' of ' + exports.expected + ' tests.\n');
 });

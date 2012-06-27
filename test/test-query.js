@@ -1,7 +1,6 @@
 var common = require('./common');
 var assert = common.assert;
 var client = common.createClient();
-var print = common.print;
 var solr = common.solr;
 
 common.expected = 5;
@@ -27,15 +26,15 @@ client.del(null, '*:*', function(err) {  // Clean up index
         if (err) throw err;
         assert.equal(solr.getStatus(res), 0, 'Raw query failed.');
       });
-      var query = 'bob:poodle';
+      query = 'bob:poodle';
       client.query(query, function(err) {
         assert.equal(err.message, 'undefined field bob', "Undefined field didn't error right.");
       });
-      var query = 'bar_t:11:15';
+      query = 'bar_t:11:15';
       client.query(query, function(err) {
         assert.ok(err, "Unescaped query didn't error right.");
       });
-      var query = 'bar_t:' + solr.valueEscape('11:00 + 15');
+      query = 'bar_t:' + solr.valueEscape('11:00 + 15');
       client.query(query, function(err, res) {
         if (err) throw err;
         assert.equal(JSON.parse(res).response.numFound, 1, 'Escaped query failed.');

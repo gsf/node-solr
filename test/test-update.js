@@ -1,7 +1,6 @@
 var common = require('./common');
 var assert = common.assert;
 var client = common.createClient();
-var print = common.print;
 var solr = common.solr;
 
 common.expected = 9;
@@ -40,7 +39,7 @@ client.del(null, '*:*', function(err) {  // Clean up index
     doc = {
       id: 4,
       fizzbuzz_t: 'foo',
-      wakak_i: '7',
+      wakak_i: '7'
     };
     var options = {
       overwrite: false
@@ -63,7 +62,7 @@ client.del(null, '*:*', function(err) {  // Clean up index
     });
     doc = {
       fizzbuzz_t: 'foo',
-      wakak_i: '5',
+      wakak_i: '5'
     };
     client.add(doc, function(err, res) {
       assert.ok(/missing required field: id/.test(err.message), 'Add document without ID should fail.');
@@ -90,4 +89,3 @@ client.del(null, '*:*', function(err) {  // Clean up index
     });
   });
 });
-
