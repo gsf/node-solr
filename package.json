@@ -11,6 +11,7 @@
   , "Lee Iverson <leei@ece.ubc.ca>"
   , "V Sreekanth <sreeix@gmail.com>"
   , "Ryan <ryan.fairchild@gmail.com>"
+  , "Fyodor Y <fygrave@o0o.nu>"
   ]
 , "engines" : { "node": ">=0.4.0" }
 , "main" : "lib/solr"
