@@ -1,6 +1,12 @@
 Solr module for Node.js
 
 
+*** Note!
+*** I have no active Solr projects at this time and would be happy to
+*** hand maintenance of node-solr off to someone more invested. Send
+*** me a message and I'll redirect people to your fork.
+
+
 Node.js: http://github.com/joyent/node
 Solr: http://lucene.apache.org/solr/
 
