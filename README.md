@@ -53,7 +53,7 @@ See tests for usage. Here's a quick example:
     });
 ```
 
-## Optional Parameters for Add documents
+## Optional Parameters
 
 Solr add/replace documents supports optional parameters.
 
