@@ -55,3 +55,20 @@ See tests for usage. Here's a quick example:
         });
       });
     });
+
+## Optional Parameters for Add documents
+
+Solr add/replace documents supports optional parameters.
+
+```
+var doc1 = {
+  id: '1',
+  title_t: {
+    params: {
+      boost: '2.0'
+    },
+    value: 'Foo bar',
+  },
+  text_t: 'Fizz buzz frizzle'
+};
+```
