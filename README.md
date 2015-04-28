@@ -1,20 +1,16 @@
-Solr module for Node.js
+# Solr module for Node.js
 
+## References
+* Node.js: http://github.com/joyent/node
+* Solr: http://lucene.apache.org/solr/
 
-*** Note!
-*** I have no active Solr projects at this time and would be happy to
-*** hand maintenance of node-solr off to someone more invested. Send
-*** me a message and I'll redirect people to your fork.
+Run tests with `npm test`. Edit "test/common.js" if you don't have Solr running at 127.0.0.1:8983. 
 
-
-Node.js: http://github.com/joyent/node
-Solr: http://lucene.apache.org/solr/
-
-Run tests with `npm test`. Edit "test/common.js" if you don't have Solr 
-running at 127.0.0.1:8983. 
+## Usage Example
 
 See tests for usage. Here's a quick example:
 
+```javascript
     var solr = require('solr');
 
     var client = solr.createClient();
@@ -55,12 +51,13 @@ See tests for usage. Here's a quick example:
         });
       });
     });
+```
 
-## Optional Parameters for Add documents
+## Optional Parameters
 
 Solr add/replace documents supports optional parameters.
 
-```
+```javascript
 var doc1 = {
   id: '1',
   title_t: {
